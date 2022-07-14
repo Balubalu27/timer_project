@@ -8,9 +8,9 @@ app = Celery('timer')
 app.config_from_object('django.conf:settings', namespace='CELERY')
 
 app.conf.beat_schedule = {
-    'get_somth_30s': {
+    'get_somth_2s': {
         'task': 'timer.tasks.get_somth',
-        'schedule': 30.0
+        'schedule': 2.0
     }
 }
 

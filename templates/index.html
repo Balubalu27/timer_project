@@ -1,20 +1,25 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-0evHe/X+R7YkIZDRvuzKMRqM+OrBnVFBL6DOitfPri4tjfHxaWutUpFmBp4vmVor" crossorigin="anonymous">
+    <link rel="stylesheet" href="{% static 'styles.css' %}">
+    <script src="https://unpkg.com/vue@3"></script>
     <title>Timer</title>
 </head>
 <body>
     <div class="container">
         <div class="row">
             <div class="col-6 mx-auto mt-5">
-                <h3 class="mb-5">Some text</h3>
+                <h3 class="mb-5">{{ lala }}</h3>
 
                 <form action='' method='POST'>
                     {% csrf_token %}
                     <button type='submit'> {{ button_text }}</button>
                 </form>
-
+            {% verbatim %}
+            <div id="app">
                 <table class="table table-hover">
                     <thead>
                         <tr>
@@ -24,17 +29,40 @@
                         </tr>
                     </thead>
                     <tbody>
-{#                        {% for object in context %}#}
-                            <tr>
-                                <td class="align-middle">{{ a }}</td>
-                                <td class="align-middle">{{ b }}</td>
-                                <td class="align-middle">{{ c }}</td>
+                            <tr v-for="row in rows" :key="row.id">
+                                <td class="align-middle">{{ row.date }}</td>
+                                <td class="align-middle">{{ row.time }}</td>
+                                <td class="align-middle">{{ row.event }}</td>
                             </tr>
-{#                        {% endfor %}#}
                     </tbody>
                 </table>
             </div>
+            {% endverbatim %}
+            </div>
         </div>
     </div>
+
+    <script>
+        const { createApp } = Vue;
+
+        const CoinsApp = {
+            data(){
+                return {
+                    rows: null
+                }
+            },
+            created(){
+                const socket = new WebSocket(`ws://${window.location.host}/ws/timer/`);
+
+                let _this = this;
+                socket.onmessage = function(event){
+                    _this.rows = JSON.parse(event.data);
+                    console.log(_this.rows);
+                }
+            }
+        }
+
+        createApp(CoinsApp).mount('#app')
+    </script>
 </body>
 </html>

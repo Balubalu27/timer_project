@@ -40,6 +40,8 @@ INSTALLED_APPS = [
 
     'timer',
 
+    'channels',
+
 ]
 
 MIDDLEWARE = [
@@ -72,6 +74,7 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'timer_project.wsgi.application'
+ASGI_APPLICATION = 'timer_project.asgi.application'
 
 CELERY_BROKER_URL = 'redis://localhost:6379'
 
@@ -83,6 +86,16 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
         'NAME': BASE_DIR / 'db.sqlite3',
+    }
+}
+
+
+CHANNEL_LAYERS = {
+    'default': {
+        'BACKEND': 'channels_redis.core.RedisChannelLayer',
+        'CONFIG': {
+            'hosts': [('127.0.0.1', 6379)]
+        }
     }
 }
 
@@ -109,9 +122,9 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/4.0/topics/i18n/
 
-LANGUAGE_CODE = 'en-us'
+LANGUAGE_CODE = 'ru'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'Europe/Moscow'
 
 USE_I18N = True
 
@@ -122,21 +135,12 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/4.0/howto/static-files/
 
 STATIC_URL = 'static/'
+STATICFILES_DIRS = [
+    BASE_DIR.joinpath('static')
+]
+
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.0/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
-
-
-# # Конфигурация Channels
-# ASGI_APPLICATION = "olympia.routing.application"
-# CHANNEL_LAYERS = {
-#     'default': {
-#         'BACKEND': 'channels_redis.core.RedisChannelLayer',
-#         'CONFIG': {
-#             "hosts": [CHANNEL_REDIS_HOST],
-#             "symmetric_encryption_keys": [SECRET_KEY],
-#         },
-#     },
-# }
