@@ -10,7 +10,7 @@ channel_layer = get_channel_layer()
 
 
 @shared_task()
-def get_somth():
+def get_obj_values():
     timer_objects = list(Timer.objects.all().values())
     text = json.dumps(timer_objects, default=str)
     async_to_sync(channel_layer.group_send)('timer', {'type': 'send_new_data', 'text': text})
