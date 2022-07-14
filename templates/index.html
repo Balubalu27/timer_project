@@ -12,11 +12,9 @@
     <div class="container">
         <div class="row">
             <div class="col-6 mx-auto mt-5">
-                <h3 class="mb-5">{{ lala }}</h3>
-
-                <form action='' method='POST'>
+                <form action={% url 'button' %}>
                     {% csrf_token %}
-                    <button type='submit'> {{ button_text }}</button>
+                    <button type='submit'> {{ event }}</button>
                 </form>
             {% verbatim %}
             <div id="app">
