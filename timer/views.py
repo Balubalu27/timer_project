@@ -1,6 +1,8 @@
 from django.shortcuts import render
 from django.views import View
 
+from timer.models import Timer
+
 
 class WorkWithTimerView(View):
     def get(self, request):
