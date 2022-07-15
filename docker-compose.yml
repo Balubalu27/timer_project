@@ -1,0 +1,45 @@
+version: '3.3'
+
+services:
+  pg_db:
+    image: postgres:14.2-alpine
+    environment:
+      POSTGRES_PASSWORD: 123456
+      POSTGRES_USER: postgres
+      POSTGRES_DB: postgres
+    volumes:
+      - pg_data:/var/lib/postgresql/data
+  redis:
+    image: redis:alpine
+  celery:
+    restart: always
+    build:
+      context: .
+    command: celery -A timer_project worker -l info
+    volumes:
+      - ./timer_project:/timer_project
+    depends_on:
+      - pg_db
+      - redis
+      - django
+  django:
+    container_name: timer_project
+    build:
+      context: ./
+      dockerfile: Dockerfile
+    command: bash -c "
+             python /usr/src/timer_project/manage.py makemigrations &&
+             python /usr/src/timer_project/manage.py migrate --noinput &&
+             python /usr/src/timer_project/manage.py runserver 0.0.0.0:8000
+      "
+    volumes:
+      - .:/usr/src/timer_project
+    ports:
+      - 8000:8000
+    depends_on:
+      - pg_db
+    restart: always
+    env_file:
+      - ./.env.dev
+volumes:
+  pg_data:
