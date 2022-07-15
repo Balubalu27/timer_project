@@ -9,10 +9,14 @@ from timer.models import Timer
 class WorkWithTimerView(View):
 
     def get(self, request):
-        last_obj = Timer.objects.all().last()
-        last_event = last_obj.event
-        cur_timer = last_obj.time
-        return render(request, 'index.html', {'event': last_event, 'timer': cur_timer})
+        def get(self, request):
+            last_obj = Timer.objects.all().last()
+            if last_obj:
+                last_event = last_obj.event
+                cur_timer = last_obj.time
+                return render(request, 'index.html', {'event': last_event, 'timer': cur_timer})
+            else:
+                return render(request, 'index.html', {'event': 'Start'})
 
 
 def button_click(request):
